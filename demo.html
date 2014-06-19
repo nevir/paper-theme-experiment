@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>paper-theme</title>
+  <script src="../platform/platform.js"></script>
+
+  <link rel="import" href="paper-theme.html">
+
+  <link rel="import" href="../core-icons/iconsets/maps-icons.html">
+
+  <link rel="import" href="../core-icon-button/core-icon-button.html">
+  <link rel="import" href="../core-item/core-item.html">
+  <link rel="import" href="../core-scaffold/core-scaffold.html">
+  <link rel="import" href="../core-toolbar/core-toolbar.html">
+  <link rel="import" href="../paper-fab/paper-fab.html">
+  <link rel="import" href="../paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="../paper-shadow/paper-shadow.html">
+  <link rel="import" href="../paper-tabs/paper-tabs.html">
+
+  <paper-theme primaryColor="#673ab7" accentColor="#00bcd4"></paper-theme>
+
+  <core-style id="primary">
+    paper-fab {
+      position: absolute;
+      right: 16px;
+      bottom: -28px;
+      z-index: 1; /* TODO(imac): How can I get this above the toolbar, but below the overlay shade? */
+    }
+
+    x-card {
+      margin: 8px;
+      padding: 8px;
+    }
+
+    header {
+      {{list.paperTypographyFontSubhead.cssText}};
+      margin: 8px 0;
+    }
+  </core-style>
+  <!-- It'd be nice to have a core-style flag for just immediately applying -->
+  <core-style ref="primary"></core-style>
+
+  <polymer-element name="x-card" noscript>
+    <template>
+      <style>
+        :host {
+          display: block;
+          background: white;
+        }
+        #content {
+          position: relative; /* Otherwise the shadows are on top. */
+        }
+      </style>
+      <paper-shadow z="1"></paper-shadow>
+      <div id="content"><content select="*"></content></div>
+    </template>
+  </polymer-element>
+
+</head>
+<body unresolved>
+  <core-scaffold>
+    <template is="auto-binding">
+      <core-style id="style"></core-style>
+      <div tool>&lt;paper-theme primaryColor="{{$.style.paper.primaryColor}}" accentColor="{{$.style.paper.accentColor}}"&gt;</div>
+    </template>
+
+    <article paper-font-style="body-1">
+
+      <x-card id="font-styles">
+        <div paper-font-style="display-4">Display 4</div>
+        <div paper-font-style="display-3">Display 3</div>
+        <div paper-font-style="display-2">Display 2</div>
+        <div paper-font-style="display-1">Display 1</div>
+        <div paper-font-style="headline">Headline</div>
+        <div paper-font-style="title">Title</div>
+        <div paper-font-style="subhead">Subhead</div>
+        <div paper-font-style="body-2">Body 2</div>
+        <div paper-font-style="body-1">Body 1</div>
+        <div paper-font-style="caption">Caption</div>
+        <div paper-font-style="menu">Menu</div>
+        <div paper-font-style="button">Button</div>
+      </x-card>
+
+      <x-card id="tabs">
+        <!-- Yoinked directly from paper-tabs/demo.html, minus its styles -->
+        <header>No ink effect and no sliding bar</header>
+
+        <paper-tabs selected="0" noink nobar>
+
+          <paper-tab>ITEM ONE</paper-tab>
+          <paper-tab>ITEM TWO</paper-tab>
+          <paper-tab>ITEM THREE</paper-tab>
+
+        </paper-tabs>
+
+        <header>The bar slides to the selected tab</header>
+
+        <paper-tabs selected="0" noink>
+
+          <paper-tab>ITEM ONE</paper-tab>
+          <paper-tab>ITEM TWO</paper-tab>
+          <paper-tab>ITEM THREE</paper-tab>
+
+        </paper-tabs>
+
+        <header>Inky Tabs</header>
+
+        <paper-tabs selected="0">
+
+          <paper-tab>ITEM ONE</paper-tab>
+          <paper-tab>ITEM TWO</paper-tab>
+          <paper-tab>ITEM THREE</paper-tab>
+
+        </paper-tabs>
+
+      </x-card>
+
+    </article>
+    <nav>
+      <core-item label="Font Styles" icon="maps:earth"></core-item>
+      <core-item label="Tabs" icon="maps:flights"></core-item>
+      <core-item label="Three" icon="maps:hotel"></core-item>
+      <core-item label="Four" icon="maps:location"></core-item>
+      <core-item label="Fayve" icon="maps:map"></core-item>
+    </nav>
+    <paper-fab icon="maps:directions-subway" tool></paper-fab>
+  </core-scaffold>
+</body>
+</html>

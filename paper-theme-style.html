@@ -1,0 +1,71 @@
+<!--
+Currently, core-style renders provided styles *immediately* upon creation if
+they have textContent (or async if not). Unfortunately for us, that makes it
+difficult to configure AND provide styles within the same element.
+
+We need to be able to defer the rendering of styles until _after_ the
+`paper-theme` element has been fully constructed - and has injected its theme
+configuration.
+
+Because paper-theme knows which styles are used (global, and elements), we can
+also allow it to render only those styles that are needed. Basically, we just
+skip calling `provide`. It is up to paper-theme to call `provide` when it is
+ready.
+
+TODO(imac): What's the _real_ solution here? sorvell@ probably has ideas.
+-->
+<link href="../core-style/core-style.html" rel="import">
+
+<polymer-element name="paper-theme-style" extends="core-style" hidden>
+  <script>
+  (function() {
+    window.PaperThemeStyle = window.PaperThemeStyle || {
+      providers: {}
+    };
+
+    Polymer('paper-theme-style', {
+
+      publish: {
+        /**
+         * A namespace for the kind of style within the theme.
+         *
+         * @attribute type
+         * @type string global|element
+         */
+        type: '',
+        /**
+         * A unique key for the style within its namespace
+         *
+         * @attribute type
+         * @type string
+         */
+        key: ''
+      },
+
+      providers: PaperThemeStyle.providers,
+
+      // General awkwardness with constructing elements that have required
+      // attributes in JS :(
+      //
+      // `core-style#ready` requires either `id` or `ref` to be set, as it sets
+      // up most of its state at that point. Unfortunately, this means that we
+      // cannot use `document.createElement` to construct a working
+      // `core-style`.
+      //
+      // So, we have the caller defer that;
+      ready: function() {
+        if (!this.key || !this.type) {
+          throw Error('paper-theme-style requires key and type');
+        }
+        this.id = 'paper-theme-' + this.type + '-' + this.key;
+        if (!this.providers[this.type]) {
+          this.providers[this.type] = {}
+        }
+        this.providers[this.type][this.key] = this;
+      }
+
+    });
+
+  })();
+  </script>
+</polymer-element>

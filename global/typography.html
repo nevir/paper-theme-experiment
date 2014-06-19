@@ -1,0 +1,198 @@
+<link href="../paper-theme-style.html" rel="import">
+<link href="../../font-roboto/roboto.html" rel="import">
+
+<!--
+Shared typographic styles, used throughout `paper-theme`.
+
+While you could use these in your own themes, for app-specific components, the
+`paper-font-style` attribute (defined below) is probably more convenient.
+-->
+
+<core-style id="paperTypographyFontDisplay4">
+  color: #757575;
+  font-size: 112px;
+  font-weight: 300;
+  letter-spacing: -.044em;
+  line-height: 120px;  /* guessed */
+  text-indent: -0.089em;
+  text-rendering: optimizeLegibility;
+</core-style>
+
+<core-style id="paperTypographyFontDisplay3">
+  color: #757575;
+  font-size: 56px;
+  font-weight: 400;
+  letter-spacing: -.026em;
+  line-height: 60px;  /* guessed */
+  text-indent: -0.082em;
+  text-rendering: optimizeLegibility;
+</core-style>
+
+<core-style id="paperTypographyFontDisplay2">
+  color: #757575;
+  font-size: 45px;
+  font-weight: 400;
+  letter-spacing: -.018em;
+  line-height: 48px;
+  text-indent: -0.08em;
+  text-rendering: optimizeLegibility;
+</core-style>
+
+<core-style id="paperTypographyFontDisplay1">
+  color: #757575;
+  font-size: 34px;
+  font-weight: 400;
+  letter-spacing: -.01em;
+  line-height: 40px;
+  text-indent: -0.08em;
+  text-rendering: optimizeLegibility;
+</core-style>
+
+<core-style id="paperTypographyFontHeadline">
+  color: #212121;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: -.012em;
+  line-height: 32px;
+  text-indent: -0.078em;
+  text-rendering: optimizeLegibility;
+</core-style>
+
+<core-style id="paperTypographyFontTitle">
+  color: #212121;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;  /* guessed */
+  text-indent: -0.07em;
+  text-rendering: optimizeLegibility;
+</core-style>
+
+<core-style id="paperTypographyFontSubhead">
+  color: #212121;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;  /* guessed */
+  text-indent: -0.068em;
+  text-rendering: optimizeLegibility;
+</core-style>
+
+<core-style id="paperTypographyFontBody2">
+  color: #212121;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 24px;  /* guessed */
+  text-indent: -0.068em;
+</core-style>
+
+<core-style id="paperTypographyFontBody1">
+  color: #212121;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 20px;  /* guessed */
+  text-indent: -0.074em;
+</core-style>
+
+<core-style id="paperTypographyFontCaption">
+  color: #757575;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.011em;
+  line-height: 20px;  /* guessed */
+  text-indent: -0.074em;
+</core-style>
+
+<core-style id="paperTypographyFontMenu">
+  color: #212121;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 24px;  /* guessed */
+  text-indent: -0.068em;
+</core-style>
+
+<core-style id="paperTypographyFontButton">
+  color: #212121;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.018em;
+  line-height: 24px;  /* guessed */
+  text-indent: -0.068em;
+  text-transform: uppercase;
+</core-style>
+
+<!--
+Global styles for your document.
+-->
+
+<paper-theme-style key="typography" type="global">
+
+/* Base Typography */
+
+html {
+  -webkit-font-smoothing: antialiased;  /*  OS X subpixel AA bleed bug */
+  font-family: RobotoDraft, 'Helvetica Neue', Helvetica, sans-serif;
+
+}
+
+/* Nested Content */
+
+html /deep/ [paper-font-style] p {
+  margin: 16px 0;  /* guessed */
+}
+html /deep/ [paper-font-style] p:first-child {
+  margin-top: 0;
+}
+html /deep/ [paper-font-style] p:last-child {
+  margin-bottom: 0;
+}
+
+/* Links are similar to button style, but with inherited font metrics. */
+html /deep/ [paper-font-style] a {
+  color: #212121;
+  font-weight: 500;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+html /deep/ [paper-font-style] a:hover {
+  text-decoration: underline;
+}
+
+/* Specific Font Styles */
+
+html /deep/ [paper-font-style=display-4] {
+  {{list.paperTypographyFontDisplay4.cssText}}
+}
+html /deep/ [paper-font-style=display-3] {
+  {{list.paperTypographyFontDisplay3.cssText}}
+}
+html /deep/ [paper-font-style=display-2] {
+  {{list.paperTypographyFontDisplay2.cssText}}
+}
+html /deep/ [paper-font-style=display-1] {
+  {{list.paperTypographyFontDisplay1.cssText}}
+}
+html /deep/ [paper-font-style=headline] {
+  {{list.paperTypographyFontHeadline.cssText}}
+}
+html /deep/ [paper-font-style=title] {
+  {{list.paperTypographyFontTitle.cssText}}
+}
+html /deep/ [paper-font-style=subhead] {
+  {{list.paperTypographyFontSubhead.cssText}}
+}
+html /deep/ [paper-font-style=body-2] {
+  {{list.paperTypographyFontBody2.cssText}}
+}
+html /deep/ [paper-font-style=body-1] {
+  {{list.paperTypographyFontBody1.cssText}}
+}
+html /deep/ [paper-font-style=caption] {
+  {{list.paperTypographyFontCaption.cssText}}
+}
+html /deep/ [paper-font-style=menu] {
+  {{list.paperTypographyFontMenu.cssText}}
+}
+html /deep/ [paper-font-style=button] {
+  {{list.paperTypographyFontButton.cssText}}
+}
+
+</core-style>

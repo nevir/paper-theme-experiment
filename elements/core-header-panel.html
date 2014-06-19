@@ -1,0 +1,18 @@
+<link href="../paper-theme-style.html" rel="import">
+
+<paper-theme-style key="core-header-panel" type="element">
+
+::content#headerContent > * {
+  background-color: {{paper.primaryColor}};
+  /* TODO(imac): We could use a filter that choses between light/dark colors
+                 based on contrast w/ another color (the background). */
+  color: white;
+  fill: white;
+  {{list.paperTypographyFontBase.cssText}}
+}
+
+#mainContainer {
+  background: #fafafa;
+}
+
+</paper-theme-style>

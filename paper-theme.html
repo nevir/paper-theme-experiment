@@ -1,0 +1,200 @@
+<!--
+`paper-theme` styles all Polymer elements in the document according to the
+Quantum Paper spec, and your configuration.
+
+Place a `paper-theme` element somewhere within the document (ideally, before as
+many other elements as possible), and it will take care of the rest!
+
+    <paper-theme primaryColor="#4285f4" accentColor="#e91e63"></paper-theme>
+
+`paper-theme` maintains a set of global and element-specific styles for use.
+
+
+Interestingly, there's pretty much nothing QP-specific about this element, aside
+from the configuration and namespace. It might be really handy to have an
+abstract theme element that allows theme authors to easily package their styles.
+-->
+<script src="custom-elements-registration-event-shim.js"></script>
+
+<link href="../core-style/core-style.html" rel="import">
+<link href="paper-theme-style.html" rel="import">
+
+<!--
+TODO(imac): Need some way of stripping unused style categories? Or just force
+            users to include what they want?
+-->
+<link href="global/typography.html" rel="import">
+
+<link href="elements/core-header-panel.html" rel="import">
+<link href="elements/paper-fab.html" rel="import">
+<link href="elements/paper-tabs.html" rel="import">
+
+<polymer-element name="paper-theme" hidden>
+  <script>
+  (function() {
+
+    Polymer('paper-theme', {
+
+      publish: {
+        /**
+         * The primary color of your theme. This is frequently used for
+         * backgrounds and fills.
+         *
+         * @attribute primaryColor
+         * @type string
+         * @default '#4285f4'
+         */
+        primaryColor: '#4285f4',  // Google Blue
+        /**
+         * The accent color for your theme. This is used to draw the user's
+         * attention to finer points in your interface.
+         *
+         * @attribute accentColor
+         * @type string
+         * @default '#4285f4'
+         */
+        accentColor: '#db4437'  // Google Red
+        // TODO(imac): Configuration to choose which global and element styles
+        // are enabled.
+      },
+
+      ready: function() {
+        this._injectConfiguration();  // MUST occur before _buildGlobalStyles!
+        this._installGlobalStyles();
+
+        // See custom-events-registration-event-shim.js.
+        this._elementRegisteredListener = this._onElementRegistered.bind(this);
+        document.addEventListener('HTMLElementRegistered', this._elementRegisteredListener);
+      },
+
+      detached: function() {
+        document.removeEventListener('HTMLElementRegistered', this._elementRegisteredListener);
+        // TODO(imac): Do we want to support actually removing injected styles?
+      },
+
+      /**
+       * Expose a configuration namespace in `core-style`'s context. Note that
+       * this exposes **both** `{{g.paper}}` and `{{paper}}`.
+       *
+       * Exposing `{{paper}}` is a bit of a hack: the configuration hs to be
+       * mixed into `core-style`'s prototype. It seems like it's worth it as a
+       * convenience, though.
+       */
+      _injectConfiguration: function() {
+        // {{g.paper}}
+        CoreStyle.g.paper = {};
+        Object.keys(this.publish).forEach(function(key) {
+          CoreStyle.g.paper[key] = this[key];
+        }, this);
+        // {{paper}}
+        var prototype = Polymer.getRegisteredPrototype('core-style');
+        prototype.paper = CoreStyle.g.paper;
+      },
+
+      /**
+       * Some styles are provided globally as a convenience, similar to
+       * Polymer's layout helpers.
+       *
+       * We expose these as style tags that are children of the `paper-theme`
+       * element (so they retain the same scope).
+       * TODO(imac): But they're using /deep/, so is that even important?
+       */
+      _installGlobalStyles: function() {
+        var providerMap = PaperThemeStyle.providers.global || {};
+        Object.keys(providerMap).forEach(function(kind) {
+          providerMap[kind].provide();
+          this.appendChild(newStyleConsumer(providerMap[kind]));
+        }, this);
+      },
+
+      /* *********************** */
+      /* Element Style Injection */
+      /* *********************** */
+      /* If anything about this component going to be controversial, this is it.
+       *
+       * While it would be feasible, and reasonable, to opt all of the Polymer
+       * elements into `core-style`; I think there are some things to consider:
+       *
+       *  * Not all elements are going to opt into `core-style`.
+       *
+       *    * Hopefully, As evidenced by this experiment, being able to inject
+       *      styles into components that the author doesn't control is _very_
+       *      useful.
+       *
+       *    * As an app author, using `/deep/` probably would have been fine.
+       *      However, it's still a bit annoying to deal with; and I suspect
+       *      that heavy use of `/deep/` would just lead to preprocessors that
+       *      inject it into everything.
+       *
+       *  * Injecting into arbitrary elements also provides a compatibility
+       *    story for styling non-Polymer components (albeit at a higher cost
+       *    of requiring mutation observers).
+       */
+
+      /**
+       * Listen for custom element registrations, and inject ourselves into
+       * their definitions.
+       *
+       * Also, take any pre-existing elements of that type, and inject the
+       * `core-style` into them.
+       *
+       * NOTE: This currently supports **only** Polymer elements. Other custom
+       * elements will be transformed once during document load, and then never
+       * again. A mutation observer could "fix" that.
+       */
+      _onElementRegistered: function(event) {
+        if (!PaperThemeStyle.providers.element) return;
+        var name = event.elementName;
+        var styleProvider = PaperThemeStyle.providers.element[name];
+        if (!styleProvider) return;
+
+        styleProvider.provide();
+        var elementProto = event.elementPrototype;
+        // TODO(imac): Is there a better way to detect polymer elements?
+        if (elementProto.PolymerBase) {
+          this._injectIntoElementTemplate(name, elementProto, styleProvider);
+        }
+        this._injectIntoExistingElements(name, styleProvider);
+      },
+
+      _injectIntoElementTemplate: function(name, elementProto, styleProvider) {
+        if (!elementProto.element) return;
+        var template = elementProto.element.getElementsByTagName('template')[0];
+        if (!template) return;
+
+        // No need to `require`; we're part of a template!
+        template.content.appendChild(newStyleConsumer(styleProvider));
+      },
+
+      _injectIntoExistingElements: function(name, styleProvider) {
+        var nodes = document.querySelectorAll('html /deep/ ' + name);
+        for (var i = 0, node; node = nodes[i]; i++) {
+          node.shadowRoot.appendChild(newStyleConsumer(styleProvider));
+        }
+      }
+
+    });
+
+    function newStyleConsumer(styleProvider) {
+      // "Dear god, why!?!?" Yeah, I hear you.
+      //
+      // This is a product of the general awkardness of dealing with custom
+      // elements via JS. `core-style` requires that `id` or `ref` are set by
+      // the time `ready` is called, and rightly so!
+      //
+      // Unfortunately for us, that occurs within the call to `createElement`,
+      // leaving us unable to set the configuration we wish.
+      //
+      // So, we set up an inert `core-style`, and stamp it out with the magic of
+      // templates. Huzzah?
+      var template = document.createElement('template');
+      // TODO(imac): Escape the attribute!
+      var ref = styleProvider.id;
+      template.innerHTML = '<core-style ref="' + ref + '"></core-style>';
+
+      return document.importNode(template.content, true);
+    }
+
+  })();
+  </script>
+</polymer-element>
