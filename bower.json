@@ -1,0 +1,19 @@
+{
+  "name": "paper-theme-experiment",
+  "private": true,
+  "dependencies": {
+    "core-style": "Polymer/core-style#master",
+    "font-roboto": "Polymer/font-roboto#master",
+    "polymer": "Polymer/polymer#master"
+  },
+  "devDependencies": {
+    "core-icons": "Polymer/core-icons#master",
+    "core-icon-button": "Polymer/core-icon-button#master",
+    "core-scaffold": "Polymer/core-scaffold#master",
+    "core-toolbar": "Polymer/core-toolbar#master",
+    "paper-fab": "Polymer/paper-fab#master",
+    "paper-icon-button": "Polymer/paper-icon-button#master",
+    "paper-shadow": "Polymer/paper-shadow#master",
+    "paper-tabs": "Polymer/paper-tabs#master"
+  }
+}
